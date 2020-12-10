@@ -23,12 +23,14 @@ pipeline {
       }
     }
 
-     stage('Deploy Image') {
+     stage('Push in Nexus') {
       steps{
-        withCredentials([usernamePassword(credentialsId: 'nexus_cred_id', passwordVariable: 'PassNexus', usernameVariable: 'UserNexus')]){
-        sh 'docker login -u $UserNexus -p $PassNexus 130.193.36.121:8123'
-        sh 'docker push 130.193.36.121:8123/app_boxfuse:1.0.0'}
+      script{
+        docker.withRegistry('https://130.193.36.121:8123', 'nexus_cred_id') {
+        sh 'docker push 130.193.36.121:8123/app_boxfuse:1.0.0'
       }
+      }
+        }
         }
 
   }
